@@ -191,7 +191,7 @@ class userSignature(models.Model):
     subject_title = fields.Char('Subject Title', readonly=True)
     subject_c = fields.Char('Subject Country', readonly=True)
     subject_serial_number = fields.Char(
-        'Subject Serial Number', readonly=True)
+        'Subject Serial Number')
     subject_common_name = fields.Char(
         'Subject Common Name', readonly=True)
     subject_email_address = fields.Char(
