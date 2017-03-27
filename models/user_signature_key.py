@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 import os, datetime
-from openerp import models, fields, api
-from openerp.tools.translate import _
-from openerp.exceptions import Warning
-from openerp import SUPERUSER_ID
+from odoo import models, fields, api
+from odoo.tools.translate import _
+from odoo.exceptions import Warning
+from odoo import SUPERUSER_ID
 try:
     from M2Crypto import X509 as M2X509
     from M2Crypto.EVP import MessageDigest
@@ -170,11 +170,11 @@ class userSignature(models.Model):
             print('Exception raised: %s' % ex)
             # raise Warning('Exception raised: %s' % ex)
 
-    filename = fields.Char('File Name')
+    filename = fields.Char(string='File Name')
     key_file = fields.Binary(
         string='Signature File', required=False, store=True,
         help='Upload the Signature File')
-    dec_pass = fields.Char('Pasword')
+    dec_pass = fields.Char(string='Pasword')
     # vigencia y estado
     not_before = fields.Date(
         string='Not Before', help='Not Before this Date', readonly=True)
@@ -188,39 +188,39 @@ class userSignature(models.Model):
     final_date = fields.Date(
         string='Last Date', help='Last Control Date', readonly=True)
     # sujeto
-    subject_title = fields.Char('Subject Title', readonly=True)
-    subject_c = fields.Char('Subject Country', readonly=True)
+    subject_title = fields.Char(string='Subject Title', readonly=True)
+    subject_c = fields.Char(string='Subject Country', readonly=True)
     subject_serial_number = fields.Char(
-        'Subject Serial Number')
+        string='Subject Serial Number')
     subject_common_name = fields.Char(
-        'Subject Common Name', readonly=True)
+        string='Subject Common Name', readonly=True)
     subject_email_address = fields.Char(
-        'Subject Email Address', readonly=True)
+        string='Subject Email Address', readonly=True)
     # emisor
-    issuer_country = fields.Char('Issuer Country', readonly=True)
+    issuer_country = fields.Char(string='Issuer Country', readonly=True)
     issuer_serial_number = fields.Char(
-        'Issuer Serial Number', readonly=True)
+        string='Issuer Serial Number', readonly=True)
     issuer_common_name = fields.Char(
-        'Issuer Common Name', readonly=True)
+        string='Issuer Common Name', readonly=True)
     issuer_email_address = fields.Char(
-        'Issuer Email Address', readonly=True)
+        string='Issuer Email Address', readonly=True)
     issuer_organization = fields.Char(
-        'Issuer Organization', readonly=True)
+        string='Issuer Organization', readonly=True)
     # data del certificado
-    cert_serial_number = fields.Char('Serial Number', readonly=True)
-    cert_signature_algor = fields.Char('Signature Algorithm', readonly=True)
-    cert_version  = fields.Char('Version', readonly=True)
-    cert_hash = fields.Char('Hash', readonly=True)
+    cert_serial_number = fields.Char(string='Serial Number', readonly=True)
+    cert_signature_algor = fields.Char(string='Signature Algorithm', readonly=True)
+    cert_version  = fields.Char(string='Version', readonly=True)
+    cert_hash = fields.Char(string='Hash', readonly=True)
     # data privad, readonly=Truea
-    private_key_bits = fields.Char('Private Key Bits', readonly=True)
-    private_key_check = fields.Char('Private Key Check', readonly=True)
-    private_key_type = fields.Char('Private Key Type', readonly=True)
+    private_key_bits = fields.Char(string='Private Key Bits', readonly=True)
+    private_key_check = fields.Char(string='Private Key Check', readonly=True)
+    private_key_type = fields.Char(string='Private Key Type', readonly=True)
     # cacert = fields.Char('CA Cert', readonly=True)
-    cert = fields.Text('Certificate', readonly=True)
+    cert = fields.Text(string='Certificate', readonly=True)
     priv_key = fields.Text('Private Key', readonly=True)
     authorized_users_ids = fields.One2many('res.users','cert_owner_id',
                                            string='Authorized Users')
-    cert_owner_id = fields.Many2one('res.users', 'Certificate Owner',
+    cert_owner_id = fields.Many2one('res.users', string='Certificate Owner',
                                     select=True, ondelete='cascade')
 
     @api.multi
