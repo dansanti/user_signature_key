@@ -1,2 +1,3 @@
-#Embedded file name: /opt/odoo/stable-addons/bmya/odoo-bmya/user_signature_key/__init__.py
+# -*- coding: utf-8 -*-
+
 from . import models
