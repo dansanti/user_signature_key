@@ -5,7 +5,7 @@
     'version': '1.0.0.0',
     'category': 'Utilities',
     'sequence': 12,
-    'author':  'La Otra Opcion, BMyA SA - Blanco Martín & Asociados',
+    'author':  'Daniel Santibáñez Polanco, La Otra Opcion, BMyA SA - Blanco Martín & Asociados',
     'website': 'http://blancomartin.cl',
     'license': 'AGPL-3',
     'summary': '',
