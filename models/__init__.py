@@ -1,3 +1,5 @@
 # -*- coding: utf-8 -*-
-from . import user_signature_key
-from . import company_signature_key
+
+from . import signature_key
+from . import res_users
+from . import res_company
