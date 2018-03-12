@@ -20,7 +20,7 @@
 ##############################################################################
 {
     "name": """User Signature Key""",
-    'version': '9.0.0.0.1',
+    'version': '0.0.2',
     'category': 'Utilities',
     'sequence': 12,
     'author':  'BMyA SA - Blanco Martín & Asociados',
@@ -34,7 +34,6 @@ sign electronic documents.
 """,
     'external_dependencies': {
         'python': [
-            'M2Crypto',
             'base64',
             'cStringIO',
             'OpenSSL'

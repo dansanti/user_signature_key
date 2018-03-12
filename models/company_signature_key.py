@@ -5,20 +5,19 @@ from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.exceptions import Warning
 from odoo import SUPERUSER_ID
+import base64
+import logging
+_logger = logging.getLogger(__name__)
 try:
-    from M2Crypto import X509 as M2X509
-    from M2Crypto.EVP import MessageDigest
-    from OpenSSL.crypto import *
-    import base64
+    from OpenSSL import crypto
+    type_ = crypto.FILETYPE_PEM
 except ImportError:
-    pass
+    _logger.warning('Error en cargar crypto')
 
 try:
     import cStringIO
 except ImportError:
     pass
-
-type_ = FILETYPE_PEM
 
 zero_values = {
     "filename": "",
@@ -80,15 +79,8 @@ class userSignature(models.Model):
         print(cert.as_text(), '\n')
 
     def load_cert_pk12(self, filecontent):
-        # print(filename)
 
-        # p12 = load_pkcs12(file(filename, 'rb').read(), self.dec_pass)
-        p12 = load_pkcs12(filecontent, self.dec_pass)
-
-        #try:
-        # p12 = load_pkcs12(output.read(), self.dec_pass)
-        #except Exception as ex:
-        #    raise Warning('Exception raised: %s' % ex)
+        p12 = crypto.load_pkcs12(filecontent, self.dec_pass)
 
         cert = p12.get_certificate()
         privky = p12.get_privatekey()
@@ -98,21 +90,12 @@ class userSignature(models.Model):
 
         self.not_before = datetime.datetime.strptime(cert.get_notBefore(), '%Y%m%d%H%M%SZ')
         self.not_after = datetime.datetime.strptime(cert.get_notAfter(), '%Y%m%d%H%M%SZ')
-        print('not before           ', datetime.datetime.strptime(cert.get_notBefore(), '%Y%m%d%H%M%SZ'))
-        print('not after            ', datetime.datetime.strptime(cert.get_notAfter(), '%Y%m%d%H%M%SZ'))
 
-        # self.final_date =
         self.subject_c = subject.C
         self.subject_title = subject.title
         self.subject_common_name = subject.CN
         self.subject_serial_number = subject.serialNumber
         self.subject_email_address = subject.emailAddress
-
-        print('subject.C            ', subject.C)
-        print('subject.title        ', subject.title)
-        print('subject.CN           ', subject.CN)
-        print('subject.serialNumber ', subject.serialNumber)
-        print('subject.emailAddress ', subject.emailAddress)
 
         self.issuer_country = issuer.C
         self.issuer_organization = issuer.O
@@ -121,29 +104,10 @@ class userSignature(models.Model):
         self.issuer_email_address = issuer.emailAddress
         self.status = 'expired' if cert.has_expired() else 'valid'
 
-        print('issuer.C             ', issuer.C)
-        print('issuer.O             ', issuer.O)
-        print('issuer.CN            ', issuer.CN)
-        print('issuer.serialNumber  ', issuer.serialNumber)
-        print('issuer.emailAddress  ', issuer.emailAddress)
-
-
-        print('expired?             ', cert.has_expired())
-        print('name hash            ', cert.subject_name_hash())
-        print('private key bits: ', privky.bits())
-        print('private key check: ', privky.check())
-        print('private key type: ', privky.type())
-        print('cacert: ', cacert)
-        print('xxx        ', cert)
-
         self.cert_serial_number = cert.get_serial_number()
         self.cert_signature_algor = cert.get_signature_algorithm()
         self.cert_version  = cert.get_version()
         self.cert_hash = cert.subject_name_hash()
-
-        print('cert serial number   ', cert.get_serial_number())
-        print('cert signature algor.', cert.get_signature_algorithm())
-        print('cert version         ', cert.get_version())
 
         # data privada
         self.private_key_bits = privky.bits()
@@ -154,21 +118,10 @@ class userSignature(models.Model):
         certificate = p12.get_certificate()
         private_key = p12.get_privatekey()
 
-        self.priv_key = dump_privatekey(type_, private_key)
-        self.cert = dump_certificate(type_, certificate)
+        self.priv_key = crypto.dump_privatekey(type_, private_key)
+        self.cert = crypto.dump_certificate(type_, certificate)
 
         pubkey = cert.get_pubkey()
-        print('pubkeyyyyyyyyyyyyyyyyyyyyyyyyy!!!!!!!!')
-        print(pubkey)
-
-        print(cert.digest('md5'))
-        print(cert.digest('sha1'))
-        try:
-            a = cert.sign(pubkey, 'sha1')
-            print(a)
-        except Exception as ex:
-            print('Exception raised: %s' % ex)
-            # raise Warning('Exception raised: %s' % ex)
 
     filename = fields.Char(string='File Name')
     key_file = fields.Binary(
